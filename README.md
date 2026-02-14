@@ -1,42 +1,78 @@
-# Multi-Level Causal Inference in Large Language Models
+# Multi-Model Causal Inference in Large Language Models
 
-A comprehensive guide to applying causal inference methods to Large Language Models (LLMs), demonstrating both external causality (prompt-level interventions) and internal causality (attention mechanisms as mediators).
+A comprehensive implementation demonstrating causal inference methods across multiple LLM scales (GPT-2, GPT-J, GPT-3.5), with full validation using DoWhy and CausalML libraries.
 
 ## Project Overview
 
-This project bridges traditional causal analysis with modern deep learning by:
-- Applying **Propensity Score Matching** to study instruction format effects on task completion
-- Using **Causal Mediation Analysis** to understand attention mechanisms in reasoning
-- Providing a complete theoretical foundation and practical implementation
+This project demonstrates:
+- **Multi-model analysis**: GPT-2 (124M), GPT-J (6B), GPT-3.5 (175B+) comparison
+- **Propensity Score Matching**: Two complete implementations
+  - Example 1: Few-shot prompting effects in LLMs
+  - Example 2: Job training program evaluation (LaLonde dataset)
+- **Experimental validation**: RCT benchmark for validating PSM
+- **Library validation**: DoWhy and CausalML implementations
+- **Sensitivity analysis**: Robustness across specifications
+- **Emergent properties**: Scale-dependent treatment effects
 
 ## Project Structure
 
 ```
 Individual_Nilay_Causal_Inference_LLMs/
+├── .env                                      # YOUR API KEYS (never commit!)
+├── .env.example                              # Template for API keys (safe to commit)
+├── .gitignore                                # Git ignore rules
 ├── notebooks/
-│   ├── 00_setup_and_theory.ipynb      # Theory, DAGs, dataset prep, GPT-2 testing
-│   ├── 01_example1_psm.ipynb         # Example 1: Propensity Score Matching
-│   └── 02_example2_mediation.ipynb   # Example 2: Mediation Analysis
+│   └── Causal_Inference_LLMs_Complete.ipynb  # Main analysis (all examples)
+├── cache/                                    # Generated completions (not in git)
+│   ├── gpt2_completions_real.pkl             # GPT-2 completions
+│   ├── gptj_completions_real.pkl             # GPT-J completions
+│   └── gpt35_completions_real.pkl            # GPT-3.5 completions
 ├── Example1_Dataset/
-│   └── instruction_format_data.csv    # Processed instruction format dataset
+│   └── instruction_format_data.csv           # LLM prompt format data
 ├── Example2_Dataset/
-│   └── attention_reasoning_data.csv  # Processed GSM8K dataset
-├── QuizQuestions.md                  # 15 quiz questions with explanations
-├── Video_Link.txt                    # Link to video presentation
-├── requirements.txt                  # Python dependencies
-├── LICENSE                           # MIT License
-└── README.md                         # This file
+│   ├── nswre74_treated.txt                   # LaLonde treated group (n=185)
+│   └── nswre74_control.txt                   # LaLonde control group (n=260)
+├── scripts/
+│   └── generate_dataset.py                   # Dataset generation utility
+├── QuizQuestions.md                          # 15 quiz questions
+├── Video_Link.txt                            # Video presentation link
+├── requirements.txt                          # Dependencies
+├── README.md                                 # This file
+└── LICENSE                                   # MIT License
 ```
+
+## Quick Start
+
+```bash
+# 1. Install dependencies
+pip install -r requirements.txt
+
+# 2. Configure API keys
+cp .env.example .env
+# Edit .env and add your API keys
+
+# 3. Start Jupyter
+jupyter notebook
+
+# 4. Open and run the notebook
+# notebooks/Causal_Inference_LLMs_Complete.ipynb
+```
+Note: All required dependencies are in requirements.txt
 
 ## Installation
 
-### 1. Clone or download this repository
+### 1. Clone repository
 
-### 2. Create a Python virtual environment (recommended)
+```bash
+git clone <repository-url>
+cd Individual_Nilay_Causal_Inference_LLMs
+```
+
+### 2. Create virtual environment
 
 ```bash
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+source venv/bin/activate  # Windows: venv\Scripts\activate
 ```
 
 ### 3. Install dependencies
@@ -45,168 +81,213 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-### 4. Launch Jupyter Notebook
+### 4. Set up API keys (optional but recommended)
+
+For best results with GPT-J and GPT-3.5:
+
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit .env file and add your actual API keys
+# Get Hugging Face token from: https://huggingface.co/settings/tokens
+# Get OpenAI API key from: https://platform.openai.com/api-keys
+
+# Your .env file should look like:
+# HF_TOKEN=hf_your_actual_token_here
+# OPENAI_API_KEY=sk-your_actual_key_here
+```
+
+**Important**: 
+- Never commit your `.env` file to git (it's already in `.gitignore`)
+- The `.env.example` file is a template - copy it to `.env` and add your real keys
+- Restart Jupyter kernel after creating/updating `.env` file
+
+**Alternative** (without .env file):
+```bash
+# Set as system environment variables
+export HF_TOKEN='hf_xxxxx'
+export OPENAI_API_KEY='sk-xxxxx'
+```
+
+### 5. Launch Jupyter
 
 ```bash
 jupyter notebook
 ```
 
-Navigate to the `notebooks/` directory and open the notebooks in order.
+Navigate to `notebooks/Causal_Inference_LLMs_Complete.ipynb`
 
 ## Notebook Contents
 
-### Notebook 0: Setup and Theory (`00_setup_and_theory.ipynb`)
+### Part 1: Theory (Sections 1.1-1.6)
+- Causality fundamentals (correlation vs causation, potential outcomes)
+- Causal graphs (DAGs) with practical examples
+- Propensity score matching methodology
+- Confounding and selection bias
+- Randomized controlled trials vs observational studies
 
-**Duration**: 4-6 hours
+### Part 2: Setup and DAG Visualization (Sections 2.1-2.2)
+- Library imports including DoWhy and CausalML
+- DAG visualizations for confounding and mediation
 
-**Content**:
-- Comprehensive theory section covering:
-  - Causality fundamentals (correlation vs causation, potential outcomes framework)
-  - Causal graphs (DAGs) with LLM examples
-  - Propensity score matching methodology
-  - Causal mediation analysis
-  - Data preparation for causal inference
-  - LLM-specific considerations
-- Two DAG visualizations illustrating:
-  - Confounding in instruction format experiments
-  - Mediation in attention mechanisms
-- Dataset downloads and exploratory analysis:
-  - SuperNaturalInstructions (1000 samples) for Example 1
-  - GSM8K (500 samples) for Example 2
-- GPT-2 model testing and verification
+### Part 3: Example 1 - Propensity Score Matching (Sections 3.1-3.14)
+**Research Question**: Does few-shot prompting causally improve task completion?
 
-**Key Deliverables**:
-- Title & Abstract (150-200 words)
-- Complete theory section (~2500 words)
-- Working datasets saved to disk
-- GPT-2 model confirmed functional
+**Methods**:
+- Generate Format A (zero-shot) vs Format C (few-shot) instructions
+- Multi-model completion (GPT-2, GPT-J, GPT-3.5)
+- Evaluate with perplexity, length, coherence metrics
+- Propensity score estimation and nearest-neighbor matching
+- Balance checking (SMD < 0.1)
+- ATE estimation with bootstrap CI
+- **DoWhy validation** (refutation tests)
+- **CausalML** (heterogeneous effects)
+- **Sensitivity analysis** (calipers, subgroups, IPW)
+- **Model comparison** (scale-dependent effects)
 
-### Notebook 1: Example 1 - Propensity Score Matching (`01_example1_psm.ipynb`)
+**Key Findings**:
+- GPT-2: Null effect (ATE approximately 0) - model too small
+- GPT-J: Moderate effect (ATE approximately 0.08-0.12)
+- GPT-3.5: Strong effect (ATE approximately 0.12-0.16)
+- **Conclusion**: Few-shot learning is an emergent property
 
-**Duration**: 6-8 hours
+### Part 4: Example 2 - Job Training Evaluation (LaLonde Dataset) (Sections 4.1-4.9)
+**Research Question**: Does job training causally increase earnings?
 
-**Research Question**: Does instruction format causally affect task completion quality?
+**Methods**:
+- LaLonde NSW experimental data (RCT with 185 treated, 260 control)
+- RCT analysis establishing gold standard benchmark
+- Propensity score matching implementation
+- DoWhy causal framework validation
+- Sensitivity analysis (different calipers, IPW, OLS)
+- Comprehensive visualizations (Love plots, propensity distributions)
 
-**Content**:
-- Generate three instruction formats for each task:
-  - Format A: Direct command
-  - Format B: Polite request
-  - Format C: Few-shot examples
-- Measure task completion quality with GPT-2
-- Identify confounders (task difficulty, prompt length, task category)
-- Estimate propensity scores using logistic regression
-- Perform nearest neighbor matching with caliper
-- Check balance before/after matching
-- Estimate treatment effects (ATE, ATT)
-- Conduct sensitivity analyses
+**Key Findings**:
+- RCT estimate: Job training increases earnings by ~$1,794
+- PSM successfully recovers RCT effect (validates methodology)
+- Results robust across multiple specifications
+- Demonstrates why RCTs are the gold standard
 
-**Key Deliverables**:
-- Complete causal analysis with proper causal reasoning
-- Balance visualizations
-- Treatment effect estimates with confidence intervals
-- Sensitivity analysis results
+**Why This Dataset**:
+- Most cited causal inference dataset (10,000+ citations)
+- LaLonde (1986), Dehejia & Wahba (1999)
+- Allows validation of observational methods against experimental benchmark
 
-### Notebook 2: Example 2 - Mediation Analysis (`02_example2_mediation.ipynb`)
+### Part 5: Conclusion and References (Sections 5.1-5.2)
+- Summary of findings
+- Methodological contributions
+- Literature references
 
-**Duration**: 8-10 hours (spread over 2 days)
+## Key Features
 
-**Research Question**: Does chain-of-thought prompting improve reasoning through changes in attention patterns?
+### Multi-Model Architecture
+- **Local model** (GPT-2): Fast, free, baseline
+- **HF API** (GPT-J): Free, 50x larger, emergent few-shot
+- **OpenAI API** (GPT-3.5): Best performance, low cost ($1-2)
+- **Automatic caching**: Completions saved, regenerate only when needed
 
-**Content**:
-- Generate reasoning tasks with and without CoT prompting
-- Extract attention patterns from GPT-2 at different layers/heads
-- Perform causal mediation analysis using DoWhy
-- Decompose total effect into direct and indirect effects
-- Visualize attention patterns and mediation paths
-- Conduct intervention experiments on attention heads
-- Sensitivity analysis for sequential ignorability
+### Comprehensive Validation
+- **DoWhy**: Formal causal graphs, multiple estimators, refutation tests
+- **CausalML**: Heterogeneous effects, uplift modeling, meta-learners
+- **Sensitivity Analysis**: Calipers, subgroups, alternative methods
+- **Bootstrap**: 1000-iteration confidence intervals
 
-**Key Deliverables**:
-- Complete mediation analysis
-- Attention pattern visualizations
-- Effect decomposition (direct vs indirect)
-- Intervention experiments results
+### Production-Quality Code
+- Clear documentation and cell organization
+- Error handling and retry logic for APIs
+- Progress bars (tqdm) for long operations
+- Automatic cache management
+- Flexible configuration (enable/disable models)
 
-## Datasets
+## Expected Results
 
-### Example 1: Instruction Format Dataset
-- **Source**: SuperNaturalInstructions or synthetic instruction-following tasks
-- **Size**: 1000 samples
-- **Variables**: Task type, difficulty, instruction format, input, expected output
-- **Use Case**: Studying causal effects of prompt engineering
+| Model | Parameters | ATE (Few-Shot) | Significant? | Time | Cost |
+|-------|-----------|---------------|--------------|------|------|
+| GPT-2 | 124M | approximately 0.00 | No | 15 min | $0 |
+| GPT-J | 6B | approximately 0.10 | Yes | 45 min | $0 |
+| GPT-3.5 | 175B+ | approximately 0.14 | Yes | 15 min | $2 |
 
-### Example 2: Attention and Reasoning Dataset
-- **Source**: GSM8K (Grade School Math)
-- **Size**: 500 math problems
-- **Variables**: Question, step-by-step solution, extracted attention weights
-- **Use Case**: Studying causal mediation in attention mechanisms
+## Running the Analysis
 
-## Key Concepts
+### Option 1: Quick Run (GPT-2 only)
+```python
+USE_GPT2 = True
+USE_GPTJ = False
+USE_GPT35 = False
+```
+- Time: approximately 20 minutes
+- Cost: $0
+- Result: Null findings (pedagogical)
 
-### Causal Inference Methods
-- **Propensity Score Matching**: Balancing treatment and control groups
-- **Causal Mediation Analysis**: Decomposing direct and indirect effects
-- **Potential Outcomes Framework**: Counterfactual reasoning
+### Option 2: Recommended (GPT-J)
+```python
+USE_GPT2 = True
+USE_GPTJ = True
+USE_GPT35 = False
+```
+- Time: approximately 60 minutes
+- Cost: $0
+- Result: Significant findings
 
-### LLM-Specific Applications
-- Prompts as interventions/treatments
-- Model outputs as outcomes
-- Attention mechanisms as causal mediators
-- Confounding in LLM experiments
-
-### Data Preparation for Causality
-- Feature selection (confounders vs colliders vs mediators)
-- Handling missing data in causal contexts
-- Encoding categorical variables
-- Common support and overlap requirements
+### Option 3: Full Analysis (All models)
+```python
+USE_GPT2 = True
+USE_GPTJ = True
+USE_GPT35 = True
+```
+- Time: approximately 60 minutes (parallel caching)
+- Cost: approximately $2
+- Result: Complete scale comparison
 
 ## Dependencies
 
-- **Core ML/DL**: `torch>=2.0.0`, `transformers>=4.30.0`, `datasets>=2.14.0`
-- **Causal Inference**: `dowhy>=0.11.0`, `causalml>=0.13.0`, `econml>=0.14.0`
-- **Data Processing**: `pandas>=2.0.0`, `numpy>=1.24.0`, `scikit-learn>=1.3.0`
-- **Visualization**: `matplotlib>=3.7.0`, `seaborn>=0.12.0`, `plotly>=5.14.0`, `networkx>=3.1.0`
+Core libraries:
+- `numpy`, `pandas`, `matplotlib`, `seaborn` - Data and visualization
+- `scikit-learn` - Propensity scores, preprocessing
+- `statsmodels` - Mediation analysis (OLS)
+- `networkx` - DAG visualization
+- `transformers`, `torch` - GPT-2 local generation
 
-See `requirements.txt` for complete list.
+Causal libraries:
+- `dowhy` - Causal inference framework
+- `causalml` - Heterogeneous treatment effects
 
-## Model Used
+API libraries (optional):
+- `openai` - GPT-3.5 API
+- `huggingface_hub` - GPT-J API
 
-- **GPT-2**: Fully reproducible, no API costs, publicly available
-- **Why GPT-2**: Small enough for local execution, large enough for meaningful analysis
+## Video Presentation
+
+Link: See `Video_Link.txt`
+
+## Quiz Questions
+
+15 multiple-choice questions covering:
+- Causal inference fundamentals
+- Propensity score matching
+- DAGs and confounding
+- RCTs vs observational studies
+- LaLonde dataset and experimental validation
+
+See `QuizQuestions.md`
 
 ## References
 
-### Causal Inference Foundations
-- Pearl, J. (2009). *Causality: Models, Reasoning, and Inference*
-- Rubin, D. B. (1974). Estimating causal effects of treatments
-- Imbens, G. W., & Rubin, D. B. (2015). *Causal Inference for Statistics, Social, and Biomedical Sciences*
-
-### Propensity Score Matching
-- Rosenbaum, P. R., & Rubin, D. B. (1983). The central role of the propensity score
-- Stuart, E. A. (2010). Matching methods for causal inference
-
-### Mediation Analysis
-- Imai, K., Keele, L., & Tingley, D. (2010). A general approach to causal mediation analysis
-
-### LLM and Attention
-- Vaswani, A., et al. (2017). Attention is all you need
-- Wei, J., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models
+- Brown et al. (2020): Language Models are Few-Shot Learners
+- Pearl (2009): Causality: Models, Reasoning, and Inference
+- Rosenbaum and Rubin (1983): The Central Role of the Propensity Score
+- Baron and Kenny (1986): The Moderator-Mediator Variable Distinction
+- Sharma and Kiciman (2020): DoWhy: A Python Library for Causal Inference
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - See `LICENSE` file
 
 ## Author
 
-**Nilay**  
-INFO 7390: Crash Course in Causality  
-Northeastern University  
-Spring 2026
-
-## Acknowledgments
-
-This project demonstrates the integration of causal inference methods with modern deep learning, showing how traditional causal frameworks can be applied to understand and improve Large Language Models.
+Nilay - INFO 7390 Crash Course in Causality (Spring 2026)
 
 ---
 
-**Note**: All code is designed to be fully reproducible. Set random seeds and document environment details for complete reproducibility.
+**Note**: This project demonstrates causal inference methods for educational purposes. Real-world applications should consider additional confounders, larger samples, and domain-specific validation.
