@@ -1,36 +1,14 @@
 # Video Presentation Link
 
-[Video link will be added after recording]
+**Author:** NILAY RAUT  
+**Course:** INFO 7390 - Advances in Data Science and Architecture  
+**Institution:** Northeastern University
+
+**Video Link:** [YouTube - To be added](https://youtube.com/placeholder)
 
 ## Video Details
-- **Duration**: 3-5 minutes
-- **Platform**: YouTube (unlisted), Google Drive, or similar
-- **Content**: Overview of Jupyter notebook structure, key concepts, and code demonstration
-- **Due Date**: Wednesday, Feb 11, 2026
+- **Duration:** 3-5 minutes
+- **Platform:** YouTube (unlisted), Google Drive, or similar
+- **Content:** Overview of Jupyter notebook structure, key causal concepts, and findings
 
-## Presentation Outline (Draft)
-
-### Introduction (30 seconds)
-- Brief introduction to causal inference in LLMs
-- Overview of two main examples
-
-### Theory Section (45 seconds)
-- Key causal inference concepts
-- DAGs and their interpretation
-
-### Example 1: Propensity Score Matching (1 minute)
-- Research question
-- Methodology
-- Key findings
-
-### Example 2: Mediation Analysis (1 minute)
-- Research question
-- Attention mechanisms as mediators
-- Key findings
-
-### Conclusion (30 seconds)
-- Key takeaways
-- Importance of causal analysis in ML
-
----
-*Record and add link before final submission on Friday, Feb 12, 2026*
+- Link: 

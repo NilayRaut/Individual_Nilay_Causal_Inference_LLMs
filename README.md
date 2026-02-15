@@ -1,18 +1,27 @@
-# Multi-Model Causal Inference in Large Language Models
+# Comprehensive Causal Inference: From LLM Prompting to Policy Evaluation
 
-A comprehensive implementation demonstrating causal inference methods across multiple LLM scales (GPT-2, GPT-J, GPT-3.5), with full validation using DoWhy and CausalML libraries.
+**Author:** NILAY RAUT  
+**Email:** raut.ni@northeastern.edu  
+**Course:** INFO 7390 - Advances in Data Science and Architecture  
+**Institution:** Northeastern University  
+**Semester:** Spring 2026
+
+**Links:**
+- GitHub Repository: [https://github.com/NilayRaut/Individual_Nilay_Causal_Inference_LLMs](https://github.com/NilayRaut/Individual_Nilay_Causal_Inference_LLMs)
+- Video Presentation: [YouTube Link - To be added](https://youtube.com/placeholder)
+
+---
 
 ## Project Overview
 
 This project demonstrates:
-- **Multi-model analysis**: GPT-2 (124M), GPT-J (6B), GPT-3.5 (175B+) comparison
-- **Propensity Score Matching**: Two complete implementations
-  - Example 1: Few-shot prompting effects in LLMs
-  - Example 2: Job training program evaluation (LaLonde dataset)
-- **Experimental validation**: RCT benchmark for validating PSM
-- **Library validation**: DoWhy and CausalML implementations
-- **Sensitivity analysis**: Robustness across specifications
-- **Emergent properties**: Scale-dependent treatment effects
+- **Comprehensive causal inference**: Propensity Score Matching (PSM) methodology with rigorous validation
+- **Two complete examples**:
+  - Example 1: Few-shot vs direct prompting effects in LLMs (null result demonstrates methodology)
+  - Example 2: Job training program evaluation using LaLonde dataset (validates PSM against RCT)
+- **Multi-method validation**: DoWhy and CausalML frameworks for robustness
+- **Experimental benchmark**: RCT gold standard for validating observational methods
+- **Sensitivity analysis**: Multiple specifications, calipers, and balance diagnostics
 
 ## Project Structure
 
@@ -25,7 +34,7 @@ Individual_Nilay_Causal_Inference_LLMs/
 │   └── Causal_Inference_LLMs_Complete.ipynb  # Main analysis (all examples)
 ├── cache/                                    # Generated completions (not in git)
 │   ├── gpt2_completions_real.pkl             # GPT-2 completions
-│   ├── gptj_completions_real.pkl             # GPT-J completions
+│   ├── gptneo_completions_real.pkl           # GPT-Neo completions
 │   └── gpt35_completions_real.pkl            # GPT-3.5 completions
 ├── Example1_Dataset/
 │   └── instruction_format_data.csv           # LLM prompt format data
@@ -83,7 +92,7 @@ pip install -r requirements.txt
 
 ### 4. Set up API keys (optional but recommended)
 
-For best results with GPT-J and GPT-3.5:
+For best results with GPT-Neo and GPT-3.5:
 
 ```bash
 # Copy the example file
@@ -131,26 +140,27 @@ Navigate to `notebooks/Causal_Inference_LLMs_Complete.ipynb`
 - Library imports including DoWhy and CausalML
 - DAG visualizations for confounding and mediation
 
-### Part 3: Example 1 - Propensity Score Matching (Sections 3.1-3.14)
-**Research Question**: Does few-shot prompting causally improve task completion?
+### Part 3: Example 1 - LLM Prompt Engineering Analysis (Sections 3.1-3.9)
+**Research Question**: Does few-shot prompting causally improve task completion quality?
+
+**Treatment**: Format C (few-shot with examples) vs Format A (direct zero-shot instructions)
 
 **Methods**:
-- Generate Format A (zero-shot) vs Format C (few-shot) instructions
-- Multi-model completion (GPT-2, GPT-J, GPT-3.5)
-- Evaluate with perplexity, length, coherence metrics
-- Propensity score estimation and nearest-neighbor matching
-- Balance checking (SMD < 0.1)
-- ATE estimation with bootstrap CI
-- **DoWhy validation** (refutation tests)
-- **CausalML** (heterogeneous effects)
-- **Sensitivity analysis** (calipers, subgroups, IPW)
-- **Model comparison** (scale-dependent effects)
+- Generate both instruction formats for 50 tasks with confounded assignment
+- Multi-model completion (GPT-2, GPT-Neo, GPT-3.5)
+- Quality evaluation: perplexity, length appropriateness, coherence metrics
+- Propensity score estimation and nearest-neighbor matching with caliper=0.1
+- Balance checking with Standardized Mean Differences (SMD)
+- ATE estimation with 1000-iteration bootstrap confidence intervals
+- **DoWhy validation** with refutation tests
+- **Sensitivity analysis** across multiple specifications
 
 **Key Findings**:
-- GPT-2: Null effect (ATE approximately 0) - model too small
-- GPT-J: Moderate effect (ATE approximately 0.08-0.12)
-- GPT-3.5: Strong effect (ATE approximately 0.12-0.16)
-- **Conclusion**: Few-shot learning is an emergent property
+- **Primary result**: ATE = -0.041, 95% CI [-0.098, 0.017]
+- **Interpretation**: No statistically significant causal effect detected (null result)
+- Task difficulty was the primary confounder (successfully controlled)
+- Balance improved: 74% to 81% confounding reduction with tighter caliper
+- **Conclusion**: Demonstrates PSM methodology even when treatment effect is null
 
 ### Part 4: Example 2 - Job Training Evaluation (LaLonde Dataset) (Sections 4.1-4.9)
 **Research Question**: Does job training causally increase earnings?
@@ -181,11 +191,12 @@ Navigate to `notebooks/Causal_Inference_LLMs_Complete.ipynb`
 
 ## Key Features
 
-### Multi-Model Architecture
-- **Local model** (GPT-2): Fast, free, baseline
-- **HF API** (GPT-J): Free, 50x larger, emergent few-shot
-- **OpenAI API** (GPT-3.5): Best performance, low cost ($1-2)
-- **Automatic caching**: Completions saved, regenerate only when needed
+### Multi-Framework Validation
+- **Manual PSM implementation**: Complete from scratch for educational transparency
+- **DoWhy framework**: Microsoft's causal inference library with refutation tests
+- **CausalML**: Uber's library for heterogeneous treatment effects
+- **Multiple estimation methods**: PSM, IPW, OLS regression for robustness
+- **Automatic caching**: Completions saved to avoid redundant API calls
 
 ### Comprehensive Validation
 - **DoWhy**: Formal causal graphs, multiple estimators, refutation tests
@@ -200,45 +211,43 @@ Navigate to `notebooks/Causal_Inference_LLMs_Complete.ipynb`
 - Automatic cache management
 - Flexible configuration (enable/disable models)
 
-## Expected Results
+## Key Results Summary
 
-| Model | Parameters | ATE (Few-Shot) | Significant? | Time | Cost |
-|-------|-----------|---------------|--------------|------|------|
-| GPT-2 | 124M | approximately 0.00 | No | 15 min | $0 |
-| GPT-J | 6B | approximately 0.10 | Yes | 45 min | $0 |
-| GPT-3.5 | 175B+ | approximately 0.14 | Yes | 15 min | $2 |
+### Example 1: LLM Prompt Engineering
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| ATE | -0.041 | Near-zero effect |
+| 95% CI | [-0.098, 0.017] | Includes zero (not significant) |
+| Matched Pairs | 31 | With caliper=0.1 |
+| Balance | 3/6 covariates SMD < 0.1 | Improved from 0/6 before matching |
+| Confounding Reduction | 81.1% | From 0.681 to 0.129 difference |
+
+### Example 2: Job Training Evaluation
+| Metric | Value | Interpretation |
+|--------|-------|----------------|
+| RCT Benchmark | $1,794 | Gold standard experimental result |
+| PSM Estimate | $1,730 | Within $64 (3.6%) of RCT |
+| Balance | All SMD < 0.1 | Excellent covariate balance |
+| Validation | Converges across methods | DoWhy, IPW, OLS all agree |
 
 ## Running the Analysis
 
-### Option 1: Quick Run (GPT-2 only)
-```python
-USE_GPT2 = True
-USE_GPTJ = False
-USE_GPT35 = False
-```
-- Time: approximately 20 minutes
-- Cost: $0
-- Result: Null findings (pedagogical)
+### Recommended Approach
 
-### Option 2: Recommended (GPT-J)
-```python
-USE_GPT2 = True
-USE_GPTJ = True
-USE_GPT35 = False
-```
-- Time: approximately 60 minutes
-- Cost: $0
-- Result: Significant findings
+1. **Start with cached results**: The notebook includes pre-generated completions to run immediately
+2. **Examine methodology**: Focus on PSM implementation, balance checking, and validation
+3. **Explore both examples**: Example 1 demonstrates methodology; Example 2 validates against RCT
 
-### Option 3: Full Analysis (All models)
+### Configuration Options
+
+Control which models to use in the notebook:
 ```python
-USE_GPT2 = True
-USE_GPTJ = True
-USE_GPT35 = True
+USE_GPT2 = True      # Local model, always available
+USE_GPTNEO = True    # HuggingFace API (requires HF_TOKEN)
+USE_GPT35 = True     # OpenAI API (requires OPENAI_API_KEY)
 ```
-- Time: approximately 60 minutes (parallel caching)
-- Cost: approximately $2
-- Result: Complete scale comparison
+
+**Note**: All examples use GPT-2 completions by default. Multi-model comparison is available but optional for understanding the core causal methodology.
 
 ## Dependencies
 
@@ -255,11 +264,13 @@ Causal libraries:
 
 API libraries (optional):
 - `openai` - GPT-3.5 API
-- `huggingface_hub` - GPT-J API
+- `huggingface_hub` - GPT-Neo API
 
 ## Video Presentation
 
-Link: See `Video_Link.txt`
+A 3-5 minute presentation explaining the notebook structure, key findings, and causal reasoning.
+
+Link: See `Video_Link.txt` or [YouTube - To be added](https://youtube.com/placeholder)
 
 ## Quiz Questions
 
@@ -272,21 +283,37 @@ Link: See `Video_Link.txt`
 
 See `QuizQuestions.md`
 
-## References
+## Key References
 
-- Brown et al. (2020): Language Models are Few-Shot Learners
+**Foundational Papers:**
+- Rubin (1974): Estimating Causal Effects (Potential Outcomes Framework)
+- Rosenbaum & Rubin (1983): The Central Role of the Propensity Score
 - Pearl (2009): Causality: Models, Reasoning, and Inference
-- Rosenbaum and Rubin (1983): The Central Role of the Propensity Score
-- Baron and Kenny (1986): The Moderator-Mediator Variable Distinction
-- Sharma and Kiciman (2020): DoWhy: A Python Library for Causal Inference
+- LaLonde (1986): Evaluating Training Programs with Experimental Data
+- Dehejia & Wahba (1999): Causal Effects in Nonexperimental Studies
+
+**Software & Implementation:**
+- Sharma & Kiciman (2020): DoWhy - End-to-End Library for Causal Inference
+- Chen et al. (2020): CausalML - Python Package for Causal Machine Learning
+- Imbens & Rubin (2015): Causal Inference for Statistics, Social, and Biomedical Sciences
+
+**Recent Advances (2023-2025):**
+- Chernozhukov et al. (2024): Flexible ML Methods for Causal Inference
+- Künzel & Sekhon (2024): Causal Forests - Recent Developments
+- Shi et al. (2023): Adapting Neural Networks for Causal Inference
+
+See notebook for complete bibliography with 24+ references.
 
 ## License
 
 MIT License - See `LICENSE` file
 
-## Author
+## Contact
 
-Nilay - INFO 7390 Crash Course in Causality (Spring 2026)
+**NILAY RAUT**  
+Email: raut.ni@northeastern.edu  
+Course: INFO 7390 - Advances in Data Science and Architecture  
+Institution: Northeastern University
 
 ---
 
